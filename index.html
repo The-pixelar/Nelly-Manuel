@@ -1,0 +1,820 @@
+html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boda de Manuel y Nallely</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        principal: 'var(--color-principal)',
+                        secundario: 'var(--color-secundario)',
+                        fondo: 'var(--color-fondo)',
+                        texto: 'var(--color-texto)',
+                        glassbg: 'var(--glass-bg)',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- VARIABLES CSS (DÍA / NOCHE) --- */
+        :root {
+            --color-principal: #2c3e2e;
+            --color-secundario: #d4af37;
+            --color-fondo: #fcfbf9;
+            --color-texto: #4a4a4a;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.3);
+        }
+
+        .dark-theme {
+            --color-principal: #0d1510;
+            --color-secundario: #e0be4e;
+            --color-fondo: #121212;
+            --color-texto: #e2e8f0;
+            --glass-bg: rgba(30, 30, 30, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            overflow-x: hidden;
+            transition: background-color 1s ease, color 1s ease;
+        }
+
+        .font-title { font-family: 'Cormorant Garamond', serif; }
+
+        /* --- PRELOADER --- */
+        #preloader {
+            position: fixed; inset: 0;
+            background-color: #111; z-index: 99999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+        .preloader-logo { font-size: 3rem; color: var(--color-secundario); animation: pulseLogo 2s infinite; }
+        @keyframes pulseLogo { 0% { transform: scale(0.95); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.8; } }
+
+        /* --- PARTÍCULAS CANVAS --- */
+        #particles-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 10; opacity: 0.6;
+        }
+
+        /* --- GLASSMORPHISM --- */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
+        }
+        .glass-card:hover { transform: translateY(-5px); box-shadow: 0 25px 45px rgba(0,0,0,0.1); }
+
+        /* --- SOBRE 3D PREMIUM --- */
+        #envelope-screen {
+            position: fixed; inset: 0;
+            background-color: var(--color-principal);
+            z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 1.5s ease, visibility 1.5s ease;
+            perspective: 1200px;
+        }
+
+        .envelope-wrapper {
+            position: relative; width: 320px; height: 220px;
+            background: #e8e6e1; cursor: pointer;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            border-bottom-left-radius: 6px; border-bottom-right-radius: 6px;
+            transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .envelope-wrapper:hover { transform: translateY(-8px) rotateX(5deg); }
+
+        .envelope-flap {
+            position: absolute; top: 0; left: 0; width: 0; height: 0;
+            border-left: 160px solid transparent; border-right: 160px solid transparent;
+            border-top: 120px solid #d5d1c8; transform-origin: top;
+            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1); z-index: 3;
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1));
+        }
+
+        .envelope-front {
+            position: absolute; bottom: 0; left: 0; width: 0; height: 0;
+            border-left: 160px solid #f2efe9; border-right: 160px solid #f2efe9;
+            border-bottom: 110px solid #e8e6e1; z-index: 2;
+        }
+
+        .envelope-seal {
+            position: absolute; top: 120px; left: 50%; transform: translate(-50%, -50%);
+            width: 55px; height: 55px; background: linear-gradient(135deg, var(--color-secundario), #b89326);
+            border-radius: 50%; z-index: 4; display: flex; justify-content: center; align-items: center;
+            color: white; font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600;
+            box-shadow: inset 0 2px 5px rgba(255,255,255,0.3), 0 5px 15px rgba(0,0,0,0.3);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .letter-preview {
+            position: absolute; inset: 15px;
+            background: white; z-index: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+        }
+
+        .open .envelope-flap { transform: rotateX(180deg); z-index: 1; }
+        .open .envelope-seal { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
+        .open .letter-preview { transform: translateY(-160px); }
+        .open .envelope-wrapper { transform: translateY(50px); pointer-events: none; }
+
+        /* --- REPRODUCTOR VINILO --- */
+        #music-panel {
+            position: fixed; bottom: 30px; right: 30px;
+            background: var(--glass-bg); backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border); border-radius: 50px;
+            padding: 8px 15px 8px 8px; display: flex; align-items: center; gap: 12px;
+            z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            transform: translateX(120%); transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #music-panel.visible { transform: translateX(0); }
+        
+        .vinyl-record {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: radial-gradient(circle, #222 20%, #111 30%, #333 40%, #111 50%, #333 60%, #111 70%, #222 100%);
+            border: 2px solid #fff; position: relative; display: flex; justify-content: center; align-items: center;
+            cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .vinyl-record::after {
+            content: ''; position: absolute; width: 12px; height: 12px;
+            background: var(--color-secundario); border-radius: 50%; border: 2px solid #222;
+        }
+        .spin { animation: spinVinyl 3s linear infinite; }
+        @keyframes spinVinyl { 100% { transform: rotate(360deg); } }
+        
+        .music-info { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; }
+
+        /* --- ANIMACIONES DE SCROLL CINEMATOGRÁFICO --- */
+        .reveal-layer { opacity: 0; transform: translateY(60px); transition: all 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .reveal-layer.visible { opacity: 1; transform: translateY(0); }
+
+        /* --- TIMELINE ANIMADO --- */
+        .timeline-container { position: relative; padding-left: 40px; }
+        .timeline-line {
+            position: absolute; left: 15px; top: 0; bottom: 0; width: 2px;
+            background: rgba(212, 175, 55, 0.2);
+        }
+        .timeline-progress {
+            position: absolute; left: 15px; top: 0; width: 2px; background: var(--color-secundario);
+            transition: height 0.5s ease; height: 0%;
+        }
+        .timeline-item { position: relative; margin-bottom: 40px; opacity: 0; transform: translateX(-20px); transition: all 0.8s; }
+        .timeline-item.visible { opacity: 1; transform: translateX(0); }
+        .timeline-dot {
+            width: 16px; height: 16px; background-color: var(--color-secundario);
+            border-radius: 50%; position: absolute; left: -32px; top: 5px;
+            box-shadow: 0 0 0 4px var(--color-fondo);
+        }
+
+        /* --- MODAL RSVP & LIGHTBOX --- */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+            z-index: 100000; display: flex; justify-content: center; align-items: center;
+            opacity: 0; visibility: hidden; transition: all 0.4s ease;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-content { transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
+
+        /* --- UTILIDADES --- */
+        .btn-premium {
+            position: relative; overflow: hidden; transition: all 0.3s ease;
+            background: transparent; border: 1px solid var(--color-secundario);
+        }
+        .btn-premium::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 0; height: 100%;
+            background: var(--color-secundario); transition: all 0.4s ease; z-index: -1;
+        }
+        .btn-premium:hover::before { width: 100%; }
+        .btn-premium:hover { color: white; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2); }
+        .btn-premium:active { transform: translateY(1px); }
+
+    </style>
+</head>
+<body>
+
+    <!-- PRELOADER -->
+    <div id="preloader">
+        <div class="preloader-logo font-title">M & N</div>
+        <p class="text-white mt-4 font-light tracking-[0.3em] text-xs uppercase opacity-70">Cargando experiencia...</p>
+    </div>
+
+    <!-- CANVAS PARA PARTÍCULAS DORADAS -->
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- AUDIO (Invisible) -->
+    <audio id="bg-music" loop preload="auto">
+        <source src="audio/cancion_boda.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- PANEL DE MÚSICA INTELIGENTE -->
+    <div id="music-panel">
+        <div class="vinyl-record" id="vinyl-icon" onclick="toggleMusic()"></div>
+        <div class="music-info text-texto flex flex-col justify-center">
+            <span class="font-bold leading-tight">Nuestra Canción</span>
+            <span class="opacity-60 text-[9px]" id="music-status">Toca el vinilo</span>
+        </div>
+    </div>
+
+    <!-- PANTALLA DE INICIO: EL SOBRE PREMIUM -->
+    <div id="envelope-screen">
+        <!-- Saludo Personalizado (Dinámico) -->
+        <h2 id="guest-greeting" class="font-title text-secundario text-3xl md:text-4xl mb-4 tracking-widest reveal-layer visible text-center px-4 hidden"></h2>
+        
+        <p class="font-title text-white text-xl mb-12 tracking-widest reveal-layer visible italic opacity-80" id="dynamic-quote">"Dos almas, un solo destino"</p>
+        
+        <div class="envelope-wrapper" id="envelope" onclick="openEnvelope()">
+            <div class="envelope-flap"></div>
+            <div class="envelope-seal">M&N</div>
+            <div class="envelope-front"></div>
+            <div class="letter-preview">
+                <span class="font-title text-3xl text-principal font-bold mb-2">M & N</span>
+                <span class="text-[10px] tracking-widest uppercase text-gray-500">24 Octubre 2026</span>
+            </div>
+        </div>
+        <p class="text-white mt-16 text-xs tracking-[0.3em] animate-pulse">TOCA EL SELLO PARA ABRIR</p>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL DE LA INVITACIÓN -->
+    <div id="main-content" class="hidden opacity-0 transition-opacity duration-1000 relative z-20">
+        
+        <!-- 1. PORTADA HERO (Parallax profundo) -->
+        <header class="relative h-screen bg-fixed bg-center bg-cover flex flex-col items-center justify-center text-center px-4 overflow-hidden" 
+                style="background-image: url('img/portada.jpg');">
+            <!-- Overlay oscuro elegante -->
+            <div class="absolute inset-0 bg-black/50 bg-gradient-to-t from-fondo via-transparent to-transparent"></div>
+            
+            <div class="z-10 reveal-layer" style="transition-delay: 0.5s;">
+                <p class="text-white tracking-[0.4em] mb-6 text-xs md:text-sm uppercase font-semibold">Nos Casamos</p>
+                <h1 class="font-title text-7xl md:text-9xl text-white mb-2 filter drop-shadow-lg">Manuel</h1>
+                <span class="font-title text-5xl md:text-7xl text-secundario italic my-2 block">&</span>
+                <h1 class="font-title text-7xl md:text-9xl text-white mt-2 filter drop-shadow-lg">Nallely</h1>
+                <div class="w-24 h-px bg-secundario mx-auto my-8 opacity-70"></div>
+                <p class="text-white text-lg md:text-2xl font-light tracking-[0.3em]">24 . 10 . 2026</p>
+            </div>
+            
+            <div class="absolute bottom-10 animate-bounce z-10 cursor-pointer" onclick="window.scrollTo({top: window.innerHeight, behavior: 'smooth'})">
+                <p class="text-white text-[10px] tracking-widest uppercase mb-2 opacity-70">Desliza</p>
+                <i class="fas fa-chevron-down text-white text-xl opacity-70"></i>
+            </div>
+        </header>
+
+        <!-- 2. FECHA Y CUENTA REGRESIVA (Glassmorphism) -->
+        <section class="py-24 px-6 text-center relative">
+            <div class="max-w-4xl mx-auto reveal-layer glass-card p-10 md:p-16 rounded-3xl relative z-10 -mt-32">
+                <h2 class="font-title text-5xl text-principal mb-2">El Gran Día</h2>
+                <p class="text-texto opacity-70 mb-12 tracking-widest text-sm uppercase">Comienza la cuenta regresiva</p>
+                
+                <div class="flex justify-center gap-4 md:gap-10 mb-12">
+                    <div class="flex flex-col items-center w-16 md:w-24">
+                        <span id="dias" class="font-title text-5xl md:text-7xl text-secundario">00</span>
+                        <span class="text-[10px] tracking-widest uppercase mt-3 opacity-60">Días</span>
+                    </div>
+                    <span class="font-title text-4xl md:text-6xl text-principal/20 mt-2">:</span>
+                    <div class="flex flex-col items-center w-16 md:w-24">
+                        <span id="horas" class="font-title text-5xl md:text-7xl text-secundario">00</span>
+                        <span class="text-[10px] tracking-widest uppercase mt-3 opacity-60">Horas</span>
+                    </div>
+                    <span class="font-title text-4xl md:text-6xl text-principal/20 mt-2">:</span>
+                    <div class="flex flex-col items-center w-16 md:w-24">
+                        <span id="minutos" class="font-title text-5xl md:text-7xl text-secundario">00</span>
+                        <span class="text-[10px] tracking-widest uppercase mt-3 opacity-60">Min</span>
+                    </div>
+                    <span class="font-title text-4xl md:text-6xl text-principal/20 mt-2 hidden md:block">:</span>
+                    <div class="flex flex-col items-center w-16 md:w-24 hidden md:flex">
+                        <span id="segundos" class="font-title text-5xl md:text-7xl text-secundario">00</span>
+                        <span class="text-[10px] tracking-widest uppercase mt-3 opacity-60">Seg</span>
+                    </div>
+                </div>
+
+                <button onclick="downloadICS()" class="btn-premium text-principal px-8 py-4 tracking-widest text-xs uppercase font-semibold rounded-full w-full md:w-auto">
+                    <i class="far fa-calendar-plus mr-2"></i> Agendar en Calendario
+                </button>
+            </div>
+        </section>
+
+        <!-- 3. UBICACIONES CON GOOGLE MAPS EMBEBIDO -->
+        <section class="py-20 px-6 max-w-6xl mx-auto">
+            <div class="text-center mb-20 reveal-layer">
+                <p class="tracking-widest text-secundario text-sm uppercase mb-2">Dónde y Cuándo</p>
+                <h2 class="font-title text-5xl text-principal mb-6">Ubicaciones</h2>
+                <div class="w-16 h-[2px] bg-secundario mx-auto opacity-50"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12">
+                <!-- Ceremonia -->
+                <div class="glass-card rounded-2xl overflow-hidden reveal-layer flex flex-col">
+                    <!-- Iframe Maps (Ejemplo genérico, cambiar src real) -->
+                    <div class="h-64 w-full bg-gray-200">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d118506.66698642704!2d-102.37894294474776!3d21.8841443681467!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8429ee6fa0842db7%3A0xc67f7d14db4eb6c0!2sAguascalientes%2C%20Ags.!5e0!3m2!1ses!2smx!4v1715000000000!5m2!1ses!2smx" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                    <div class="p-10 text-center flex-grow flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 rounded-full bg-principal/5 mx-auto flex items-center justify-center mb-4 text-secundario text-xl">
+                                <i class="fas fa-church"></i>
+                            </div>
+                            <h3 class="font-title text-3xl mb-2 text-principal">Ceremonia</h3>
+                            <p class="font-semibold text-sm mb-4 tracking-wider">TEMPLO DE SAN ANTONIO</p>
+                            <p class="text-texto opacity-70 mb-2 text-sm"><i class="far fa-clock text-secundario mr-2"></i> 16:00 HRS</p>
+                            <p class="text-texto opacity-70 mb-8 text-xs leading-relaxed">Calle Zaragoza Centro,<br>Aguascalientes</p>
+                        </div>
+                        <a href="URL_GOOGLE_MAPS" target="_blank" class="block w-full py-3 bg-principal text-fondo tracking-widest text-xs uppercase rounded hover:bg-secundario transition-colors">
+                            Abrir en App de Mapas
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Recepción -->
+                <div class="glass-card rounded-2xl overflow-hidden reveal-layer flex flex-col" style="transition-delay: 0.2s;">
+                    <div class="h-64 w-full bg-gray-200">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d118506.66698642704!2d-102.37894294474776!3d21.8841443681467!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8429ee6fa0842db7%3A0xc67f7d14db4eb6c0!2sAguascalientes%2C%20Ags.!5e0!3m2!1ses!2smx!4v1715000000000!5m2!1ses!2smx" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                    <div class="p-10 text-center flex-grow flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 rounded-full bg-principal/5 mx-auto flex items-center justify-center mb-4 text-secundario text-xl">
+                                <i class="fas fa-glass-cheers"></i>
+                            </div>
+                            <h3 class="font-title text-3xl mb-2 text-principal">Recepción</h3>
+                            <p class="font-semibold text-sm mb-4 tracking-wider">HACIENDA SAN JOSÉ</p>
+                            <p class="text-texto opacity-70 mb-2 text-sm"><i class="far fa-clock text-secundario mr-2"></i> 18:30 HRS</p>
+                            <p class="text-texto opacity-70 mb-8 text-xs leading-relaxed">Carretera Antigua, Km 5<br>Aguascalientes</p>
+                        </div>
+                        <a href="URL_GOOGLE_MAPS" target="_blank" class="block w-full py-3 bg-principal text-fondo tracking-widest text-xs uppercase rounded hover:bg-secundario transition-colors">
+                            Abrir en App de Mapas
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. ITINERARIO ANIMADO -->
+        <section class="py-24 relative overflow-hidden bg-principal text-fondo">
+            <div class="absolute inset-0 opacity-5 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')]"></div>
+            
+            <div class="max-w-xl mx-auto px-6 relative z-10 reveal-layer">
+                <div class="text-center mb-16">
+                    <i class="far fa-hourglass text-secundario text-3xl mb-4 opacity-80"></i>
+                    <h2 class="font-title text-5xl mb-2">Nuestro Día</h2>
+                    <p class="opacity-60 text-sm tracking-widest uppercase">Itinerario</p>
+                </div>
+
+                <div class="timeline-container" id="timeline">
+                    <div class="timeline-line"></div>
+                    <div class="timeline-progress" id="timeline-progress"></div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <h4 class="font-title text-3xl text-secundario">16:00 <span class="text-xl text-fondo ml-2 font-sans tracking-widest uppercase text-xs">Ceremonia</span></h4>
+                        <p class="opacity-70 text-sm mt-2 font-light">Donde daremos el "Sí, acepto" frente a Dios y nuestros seres queridos.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <h4 class="font-title text-3xl text-secundario">18:30 <span class="text-xl text-fondo ml-2 font-sans tracking-widest uppercase text-xs">Cóctel</span></h4>
+                        <p class="opacity-70 text-sm mt-2 font-light">Música en vivo y bebidas para recibirlos en la hacienda.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <h4 class="font-title text-3xl text-secundario">20:00 <span class="text-xl text-fondo ml-2 font-sans tracking-widest uppercase text-xs">Banquete</span></h4>
+                        <p class="opacity-70 text-sm mt-2 font-light">Cena a tres tiempos para celebrar nuestra unión.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <h4 class="font-title text-3xl text-secundario">22:00 <span class="text-xl text-fondo ml-2 font-sans tracking-widest uppercase text-xs">A Bailar</span></h4>
+                        <p class="opacity-70 text-sm mt-2 font-light">Se abre la pista. ¡Prepárate para la mejor fiesta!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. GALERÍA PREMIUM (Con Lightbox) -->
+        <section class="py-20 px-4 max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal-layer">
+                <h2 class="font-title text-5xl text-principal mb-4">Nosotros</h2>
+                <div class="w-16 h-[2px] bg-secundario mx-auto opacity-50"></div>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <!-- Para ver la magia, pon imágenes reales en la carpeta img/ -->
+                <div class="h-64 md:h-80 rounded-xl overflow-hidden cursor-pointer group reveal-layer bg-gray-200" onclick="openLightbox('img/galeria1.jpg')">
+                    <img src="img/galeria1.jpg" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlNWU3ZWIiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5Y2EzYWYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPmltZy9nYWxlcmlhMS5qcGc8L3RleHQ+PC9zdmc+'" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                </div>
+                <div class="h-64 md:h-80 rounded-xl overflow-hidden cursor-pointer group reveal-layer bg-gray-200" style="transition-delay: 0.1s" onclick="openLightbox('img/galeria2.jpg')">
+                    <img src="img/galeria2.jpg" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlNWU3ZWIiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5Y2EzYWYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPmltZy9nYWxlcmlhMi5qcGc8L3RleHQ+PC9zdmc+'" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                </div>
+                <div class="h-64 md:h-80 rounded-xl overflow-hidden cursor-pointer group reveal-layer bg-gray-200" style="transition-delay: 0.2s" onclick="openLightbox('img/galeria3.jpg')">
+                    <img src="img/galeria3.jpg" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlNWU3ZWIiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5Y2EzYWYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPmltZy9nYWxlcmlhMy5qcGc8L3RleHQ+PC9zdmc+'" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                </div>
+                <div class="h-64 md:h-80 rounded-xl overflow-hidden cursor-pointer group reveal-layer bg-gray-200" style="transition-delay: 0.3s" onclick="openLightbox('img/galeria4.jpg')">
+                    <img src="img/galeria4.jpg" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlNWU3ZWIiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5Y2EzYWYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPmltZy9nYWxlcmlhNC5qcGc8L3RleHQ+PC9zdmc+'" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. CÓDIGO DE VESTIMENTA & REGALOS (Grid Híbrido) -->
+        <section class="py-20 px-6 max-w-6xl mx-auto grid md:grid-cols-2 gap-10">
+            <!-- Vestimenta -->
+            <div class="glass-card p-12 text-center rounded-3xl reveal-layer">
+                <i class="fas fa-user-tie text-4xl text-secundario mb-6 block"></i>
+                <h2 class="font-title text-4xl text-principal mb-2">Dress Code</h2>
+                <h3 class="text-sm tracking-widest font-semibold mb-8 uppercase opacity-70">Formal de Noche</h3>
+                
+                <div class="flex justify-center gap-12 mb-8 text-sm">
+                    <div>
+                        <p class="font-bold mb-1">Mujeres</p>
+                        <p class="opacity-60">Vestido Largo</p>
+                    </div>
+                    <div>
+                        <p class="font-bold mb-1">Hombres</p>
+                        <p class="opacity-60">Traje Oscuro</p>
+                    </div>
+                </div>
+                <div class="text-[10px] tracking-wider uppercase p-3 border border-secundario/30 rounded bg-secundario/5 text-principal">
+                    <span class="text-secundario font-bold">Nota:</span> Favor de reservar el blanco para la novia.
+                </div>
+            </div>
+
+            <!-- Mesa de Regalos -->
+            <div class="glass-card p-12 text-center rounded-3xl reveal-layer" style="transition-delay: 0.2s;">
+                <i class="fas fa-gift text-4xl text-secundario mb-6 block"></i>
+                <h2 class="font-title text-4xl text-principal mb-4">Mesa de Regalos</h2>
+                <p class="opacity-70 text-sm mb-8 leading-relaxed">Su presencia es nuestro mejor regalo, pero si desean tener un detalle, pueden hacerlo de las siguientes maneras:</p>
+                
+                <div class="space-y-4">
+                    <div class="border border-principal/10 p-4 rounded-xl text-sm flex items-center justify-between hover:bg-principal/5 transition">
+                        <div class="text-left"><i class="fas fa-envelope-open-text mr-2 text-secundario"></i> <b>Lluvia de Sobres</b><br><span class="text-[10px] opacity-60">Cofre en recepción</span></div>
+                    </div>
+                    <a href="#" class="border border-principal/10 p-4 rounded-xl text-sm flex items-center justify-between hover:bg-principal/5 transition block group">
+                        <div class="text-left"><i class="fas fa-shopping-bag mr-2 text-secundario"></i> <b>Liverpool</b><br><span class="text-[10px] opacity-60">Evento: #123456</span></div>
+                        <i class="fas fa-external-link-alt opacity-0 group-hover:opacity-100 transition"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. RSVP AVANZADO (Llamada a la acción y Modal) -->
+        <section class="py-32 px-6 text-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-principal"></div>
+            <!-- Círculos decorativos -->
+            <div class="absolute top-0 left-0 w-64 h-64 bg-secundario/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+            <div class="absolute bottom-0 right-0 w-96 h-96 bg-secundario/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
+            
+            <div class="max-w-2xl mx-auto relative z-10 reveal-layer">
+                <p class="tracking-[0.4em] text-secundario text-xs uppercase mb-4">No faltes</p>
+                <h2 class="font-title text-6xl md:text-7xl mb-8 text-fondo">Confirmación</h2>
+                <p class="mb-12 text-fondo/70 font-light leading-relaxed">Por favor, confírmanos tu asistencia antes del<br><b class="text-secundario">24 de Septiembre de 2026</b></p>
+                
+                <button onclick="openRSVP()" class="btn-premium bg-secundario text-principal border-none px-10 py-5 rounded-full font-bold text-sm tracking-widest uppercase shadow-[0_0_30px_rgba(212,175,55,0.4)]">
+                    Confirmar Asistencia
+                </button>
+
+                <div class="mt-24 pt-8 border-t border-white/10">
+                    <h1 class="font-title text-4xl mb-2 text-fondo">Manuel & Nallely</h1>
+                    <p class="text-[9px] tracking-[0.5em] uppercase text-secundario">Te esperamos</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- MODALES Y EXTRAS -->
+
+    <!-- Modal RSVP Avanzado -->
+    <div id="rsvp-modal" class="modal-overlay">
+        <div class="modal-content bg-fondo p-8 md:p-12 rounded-3xl max-w-md w-[90%] relative shadow-2xl border border-principal/10">
+            <button onclick="closeRSVP()" class="absolute top-6 right-6 text-2xl text-principal/50 hover:text-principal transition"><i class="fas fa-times"></i></button>
+            
+            <h2 class="font-title text-4xl text-principal mb-2 text-center">RSVP</h2>
+            <p class="text-xs text-center tracking-widest uppercase opacity-60 mb-8">Pase de abordar</p>
+
+            <form id="rsvp-form" onsubmit="sendWhatsApp(event)" class="space-y-6">
+                <div>
+                    <label class="block text-xs uppercase tracking-wider mb-2 font-semibold">Nombre Completo</label>
+                    <input type="text" id="rsvp-name" required class="w-full bg-principal/5 border border-principal/10 p-4 rounded-xl focus:outline-none focus:border-secundario transition" placeholder="Ej. Familia Pérez">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider mb-2 font-semibold">Asistencia</label>
+                        <select id="rsvp-status" class="w-full bg-principal/5 border border-principal/10 p-4 rounded-xl focus:outline-none focus:border-secundario transition">
+                            <option value="Sí asistiré">¡Sí asistiré!</option>
+                            <option value="No podré asistir">No podré asistir</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider mb-2 font-semibold">Personas</label>
+                        <input type="number" id="rsvp-pax" min="1" max="10" value="1" required class="w-full bg-principal/5 border border-principal/10 p-4 rounded-xl focus:outline-none focus:border-secundario transition text-center">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs uppercase tracking-wider mb-2 font-semibold">Mensaje o Restricción alimenticia</label>
+                    <textarea id="rsvp-msg" rows="2" class="w-full bg-principal/5 border border-principal/10 p-4 rounded-xl focus:outline-none focus:border-secundario transition resize-none" placeholder="Opcional..."></textarea>
+                </div>
+
+                <!-- Mock QR Code -->
+                <div class="flex items-center justify-center py-2 opacity-50">
+                    <i class="fas fa-qrcode text-4xl text-principal"></i>
+                </div>
+
+                <button type="submit" class="w-full bg-[#25D366] text-white py-4 rounded-xl font-bold uppercase tracking-widest text-sm hover:bg-[#1fb355] transition flex items-center justify-center gap-2">
+                    <i class="fab fa-whatsapp text-xl"></i> Enviar por WhatsApp
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Lightbox Galería -->
+    <div id="lightbox" class="modal-overlay" onclick="closeLightbox()">
+        <button class="absolute top-6 right-6 text-3xl text-white hover:text-secundario transition z-50"><i class="fas fa-times"></i></button>
+        <img id="lightbox-img" src="" class="max-w-[95%] max-h-[90vh] object-contain rounded shadow-2xl modal-content">
+    </div>
+
+    <!-- LÓGICA JAVASCRIPT (NIVEL PREMIUM) -->
+    <script>
+        // 1. Detección Día/Noche & URL Params (Modo Invitado)
+        document.addEventListener('DOMContentLoaded', () => {
+            // Tema automático por hora
+            const hour = new Date().getHours();
+            if (hour < 7 || hour > 18) {
+                document.body.classList.add('dark-theme');
+            }
+
+            // Modo Invitado Personalizado
+            const urlParams = new URLSearchParams(window.location.search);
+            const guestName = urlParams.get('guest');
+            if (guestName) {
+                const greeting = document.getElementById('guest-greeting');
+                greeting.innerHTML = `¡Hola <span class="text-white">${guestName}</span>!`;
+                greeting.classList.remove('hidden');
+            }
+
+            // Frases dinámicas
+            const quotes = [
+                '"Dos almas, un solo destino"',
+                '"Donde hay amor, hay vida"',
+                '"El inicio de nuestro para siempre"',
+                '"Juntos es nuestro lugar favorito"'
+            ];
+            document.getElementById('dynamic-quote').innerText = quotes[Math.floor(Math.random() * quotes.length)];
+
+            // Preloader cinematográfico
+            setTimeout(() => {
+                const preloader = document.getElementById('preloader');
+                preloader.style.opacity = '0';
+                setTimeout(() => preloader.style.visibility = 'hidden', 1000);
+            }, 1500);
+
+            // Estado persistente (Si ya la vio, abrir sobre automático o cambiar texto)
+            if (localStorage.getItem('boda_opened')) {
+                // Aquí podrías saltar el sobre directo ejecutando openEnvelope(), 
+                // pero por experiencia de lujo, dejamos que lo vuelva a abrir.
+                console.log("Bienvenido de vuelta");
+            }
+            
+            initCanvasParticles();
+        });
+
+        // 2. Lógica del Sobre 3D
+        function openEnvelope() {
+            const envelope = document.getElementById('envelope');
+            const screen = document.getElementById('envelope-screen');
+            const mainContent = document.getElementById('main-content');
+            const musicPanel = document.getElementById('music-panel');
+            const audio = document.getElementById('bg-music');
+            const vinyl = document.getElementById('vinyl-icon');
+            const musicStatus = document.getElementById('music-status');
+            
+            // Animación y vibración (móvil)
+            if(navigator.vibrate) navigator.vibrate(50);
+            envelope.classList.add('open');
+            localStorage.setItem('boda_opened', 'true'); // Guardar persistencia
+            
+            // Fade de música suave
+            audio.volume = 0;
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    fadeInAudio(audio);
+                    vinyl.classList.add('spin');
+                    musicStatus.innerText = "Reproduciendo";
+                }).catch(e => {
+                    console.log("Auto-play prevenido, requiere toque extra.");
+                    musicStatus.innerText = "Toca para música";
+                });
+            }
+            
+            setTimeout(() => {
+                screen.style.opacity = '0';
+                mainContent.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    screen.style.visibility = 'hidden';
+                    mainContent.classList.remove('opacity-0');
+                    document.body.classList.remove('overflow-hidden');
+                    musicPanel.classList.add('visible');
+                    initScrollAnimations(); // Activar IntersectionObserver
+                }, 500);
+            }, 1800); // Dar tiempo a que termine el 3D del sobre
+        }
+
+        // 3. Audio Inteligente
+        function toggleMusic() {
+            const audio = document.getElementById('bg-music');
+            const vinyl = document.getElementById('vinyl-icon');
+            const musicStatus = document.getElementById('music-status');
+            
+            if (audio.paused) {
+                audio.play();
+                vinyl.classList.add('spin');
+                musicStatus.innerText = "Reproduciendo";
+            } else {
+                audio.pause();
+                vinyl.classList.remove('spin');
+                musicStatus.innerText = "Pausado";
+            }
+        }
+
+        function fadeInAudio(audio) {
+            let vol = 0;
+            const fade = setInterval(() => {
+                if (vol < 0.8) { // Volumen max 80% para ser sutil
+                    vol += 0.05;
+                    audio.volume = vol;
+                } else {
+                    clearInterval(fade);
+                }
+            }, 100);
+        }
+
+        // 4. Cuenta Regresiva
+        const fechaBoda = new Date("Oct 24, 2026 16:00:00").getTime();
+        const timer = setInterval(() => {
+            const ahora = new Date().getTime();
+            const distancia = fechaBoda - ahora;
+            if (distancia < 0) return clearInterval(timer);
+
+            document.getElementById("dias").innerText = Math.floor(distancia / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+            document.getElementById("horas").innerText = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+            document.getElementById("minutos").innerText = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+            document.getElementById("segundos").innerText = Math.floor((distancia % (1000 * 60)) / 1000).toString().padStart(2, '0');
+        }, 1000);
+
+        // 5. Animaciones Cinematográficas (Scroll)
+        function initScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
+
+            document.querySelectorAll('.reveal-layer, .timeline-item').forEach(el => observer.observe(el));
+
+            // Dibujar línea del timeline dinámicamente
+            const timeline = document.getElementById('timeline');
+            const progress = document.getElementById('timeline-progress');
+            
+            window.addEventListener('scroll', () => {
+                if(!timeline) return;
+                const rect = timeline.getBoundingClientRect();
+                const viewHeight = window.innerHeight;
+                // Calcular si el timeline está en pantalla
+                if(rect.top < viewHeight && rect.bottom > 0) {
+                    let scrolled = viewHeight - rect.top;
+                    let percentage = (scrolled / rect.height) * 100;
+                    if(percentage > 100) percentage = 100;
+                    if(percentage < 0) percentage = 0;
+                    progress.style.height = percentage + '%';
+                }
+            });
+        }
+
+        // 6. Generador ICS (Agregar al Calendario)
+        function downloadICS() {
+            const icsData = "BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:20261024T220000Z\nDTEND:20261025T080000Z\nSUMMARY:Boda de Manuel y Nallely\nLOCATION:Templo de San Antonio, Aguascalientes\nDESCRIPTION:¡Acompáñanos en el mejor día de nuestras vidas!\nEND:VEVENT\nEND:VCALENDAR";
+            const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.setAttribute('download', 'Boda_Manuel_Nallely.ics');
+            document.body.appendChild(link); link.click(); document.body.removeChild(link);
+        }
+
+        // 7. Lightbox Galería Premium
+        function openLightbox(src) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox').classList.add('active');
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+            setTimeout(() => document.getElementById('lightbox-img').src = '', 400);
+        }
+
+        // 8. RSVP Avanzado (WhatsApp Inteligente)
+        function openRSVP() { document.getElementById('rsvp-modal').classList.add('active'); }
+        function closeRSVP() { document.getElementById('rsvp-modal').classList.remove('active'); }
+        
+        function sendWhatsApp(e) {
+            e.preventDefault();
+            const name = document.getElementById('rsvp-name').value;
+            const status = document.getElementById('rsvp-status').value;
+            const pax = document.getElementById('rsvp-pax').value;
+            const msg = document.getElementById('rsvp-msg').value;
+            
+            // Número de teléfono real aquí (con código de país)
+            const phone = "521234567890"; 
+            
+            let wappMsg = `¡Hola! Confirmo recibo de invitación para la boda de Manuel y Nallely.%0A%0A`;
+            wappMsg += `*Nombre:* ${name}%0A`;
+            wappMsg += `*Estatus:* ${status}%0A`;
+            if(status === 'Sí asistiré') {
+                wappMsg += `*Pases confirmados:* ${pax} persona(s)%0A`;
+            }
+            if(msg) wappMsg += `*Mensaje/Restricción:* ${msg}%0A`;
+            
+            window.open(`https://wa.me/${phone}?text=${wappMsg}`, '_blank');
+            closeRSVP();
+        }
+
+        // 9. Partículas Sutiles Nivel Lujo (Polvo Dorado)
+        function initCanvasParticles() {
+            const canvas = document.getElementById('particles-canvas');
+            const ctx = canvas.getContext('2d');
+            let particlesArray;
+
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            class Particle {
+                constructor(x, y, size, weight) {
+                    this.x = x; this.y = y; this.size = size; this.weight = weight;
+                    // Tono dorado
+                    this.color = `rgba(212, 175, 55, ${Math.random() * 0.5 + 0.1})`; 
+                }
+                update() {
+                    this.y -= this.weight; // Flotan hacia arriba
+                    this.x += (Math.random() - 0.5) * 0.5; // Ligero zig zag
+                    if (this.y < 0 - this.size) {
+                        this.y = canvas.height + this.size;
+                        this.x = Math.random() * canvas.width;
+                    }
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                }
+            }
+
+            function init() {
+                particlesArray = [];
+                const numberOfParticles = (canvas.width * canvas.height) / 15000; // Densidad sutil
+                for (let i = 0; i < numberOfParticles; i++) {
+                    const size = (Math.random() * 2) + 0.5;
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * canvas.height;
+                    const weight = (Math.random() * 0.5) + 0.1;
+                    particlesArray.push(new Particle(x, y, size, weight));
+                }
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (let i = 0; i < particlesArray.length; i++) {
+                    particlesArray[i].update();
+                    particlesArray[i].draw();
+                }
+                requestAnimationFrame(animate);
+            }
+
+            init(); animate();
+
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                init();
+            });
+        }
+    </script>
+</body>
+</html>

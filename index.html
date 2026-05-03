@@ -1,4 +1,4 @@
-html
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -31,11 +31,11 @@ html
     <style>
         /* --- VARIABLES CSS (DÍA / NOCHE) --- */
         :root {
-            --color-principal: #2c3e2e;
-            --color-secundario: #d4af37;
-            --color-fondo: #fcfbf9;
-            --color-texto: #4a4a4a;
-            --glass-bg: rgba(255, 255, 255, 0.85);
+            --color-principal: #5a4a4a;
+            --color-secundario: #e8b4b8;
+            --color-fondo: #fff7f8;
+            --color-texto: #4a3f3f;
+            --glass-bg: rgba(255, 255, 255, 0.75);
             --glass-border: rgba(255, 255, 255, 0.3);
         }
 
@@ -96,8 +96,13 @@ html
 
         .envelope-wrapper {
             position: relative; width: 320px; height: 220px;
-            background: #e8e6e1; cursor: pointer;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            background: url('https://www.transparenttextures.com/patterns/paper-fibers.png'),
+                        linear-gradient(145deg, #f5f2ec, #e8e4dc);
+            background-blend-mode: multiply;
+            cursor: pointer;
+            box-shadow:
+                inset 0 2px 10px rgba(0,0,0,0.08),
+                0 20px 50px rgba(0,0,0,0.4);
             border-bottom-left-radius: 6px; border-bottom-right-radius: 6px;
             transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -107,7 +112,7 @@ html
             position: absolute; top: 0; left: 0; width: 0; height: 0;
             border-left: 160px solid transparent; border-right: 160px solid transparent;
             border-top: 120px solid #d5d1c8; transform-origin: top;
-            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1); z-index: 3;
+            transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1); z-index: 3;
             filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1));
         }
 
@@ -126,10 +131,17 @@ html
             transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
+        .envelope-seal:active {
+            transform: translate(-50%, -50%) scale(0.9);
+        }
+
         .letter-preview {
             position: absolute; inset: 15px;
             background: white; z-index: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1); transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+            box-shadow:
+                0 10px 30px rgba(0,0,0,0.15),
+                inset 0 0 10px rgba(0,0,0,0.05);
+            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
         }
 
         .open .envelope-flap { transform: rotateX(180deg); z-index: 1; }
@@ -248,7 +260,7 @@ html
             <div class="envelope-front"></div>
             <div class="letter-preview">
                 <span class="font-title text-3xl text-principal font-bold mb-2">M & N</span>
-                <span class="text-[10px] tracking-widest uppercase text-gray-500">24 Octubre 2026</span>
+                <span class="text-[10px] tracking-widest uppercase text-gray-500">04 Abril 2027</span>
             </div>
         </div>
         <p class="text-white mt-16 text-xs tracking-[0.3em] animate-pulse">TOCA EL SELLO PARA ABRIR</p>
@@ -269,7 +281,7 @@ html
                 <span class="font-title text-5xl md:text-7xl text-secundario italic my-2 block">&</span>
                 <h1 class="font-title text-7xl md:text-9xl text-white mt-2 filter drop-shadow-lg">Nallely</h1>
                 <div class="w-24 h-px bg-secundario mx-auto my-8 opacity-70"></div>
-                <p class="text-white text-lg md:text-2xl font-light tracking-[0.3em]">24 . 10 . 2026</p>
+                <p class="text-white text-lg md:text-2xl font-light tracking-[0.3em]">04 . 04 . 2027</p>
             </div>
             
             <div class="absolute bottom-10 animate-bounce z-10 cursor-pointer" onclick="window.scrollTo({top: window.innerHeight, behavior: 'smooth'})">
@@ -284,24 +296,24 @@ html
                 <h2 class="font-title text-5xl text-principal mb-2">El Gran Día</h2>
                 <p class="text-texto opacity-70 mb-12 tracking-widest text-sm uppercase">Comienza la cuenta regresiva</p>
                 
-                <div class="flex justify-center gap-4 md:gap-10 mb-12">
-                    <div class="flex flex-col items-center w-16 md:w-24">
-                        <span id="dias" class="font-title text-5xl md:text-7xl text-secundario">00</span>
+                <div class="flex justify-center gap-2 md:gap-10 mb-12">
+                    <div class="flex flex-col items-center w-14 md:w-24">
+                        <span id="dias" class="font-title text-4xl md:text-7xl text-secundario">00</span>
                         <span class="text-[10px] tracking-widest uppercase mt-3 opacity-60">Días</span>
                     </div>
-                    <span class="font-title text-4xl md:text-6xl text-principal/20 mt-2">:</span>
-                    <div class="flex flex-col items-center w-16 md:w-24">
-                        <span id="horas" class="font-title text-5xl md:text-7xl text-secundario">00</span>
+                    <span class="font-title text-3xl md:text-6xl text-principal/20 mt-2">:</span>
+                    <div class="flex flex-col items-center w-14 md:w-24">
+                        <span id="horas" class="font-title text-4xl md:text-7xl text-secundario">00</span>
                         <span class="text-[10px] tracking-widest uppercase mt-3 opacity-60">Horas</span>
                     </div>
-                    <span class="font-title text-4xl md:text-6xl text-principal/20 mt-2">:</span>
-                    <div class="flex flex-col items-center w-16 md:w-24">
-                        <span id="minutos" class="font-title text-5xl md:text-7xl text-secundario">00</span>
+                    <span class="font-title text-3xl md:text-6xl text-principal/20 mt-2">:</span>
+                    <div class="flex flex-col items-center w-14 md:w-24">
+                        <span id="minutos" class="font-title text-4xl md:text-7xl text-secundario">00</span>
                         <span class="text-[10px] tracking-widest uppercase mt-3 opacity-60">Min</span>
                     </div>
-                    <span class="font-title text-4xl md:text-6xl text-principal/20 mt-2 hidden md:block">:</span>
-                    <div class="flex flex-col items-center w-16 md:w-24 hidden md:flex">
-                        <span id="segundos" class="font-title text-5xl md:text-7xl text-secundario">00</span>
+                    <span class="font-title text-3xl md:text-6xl text-principal/20 mt-2">:</span>
+                    <div class="flex flex-col items-center w-14 md:w-24">
+                        <span id="segundos" class="font-title text-4xl md:text-7xl text-secundario">00</span>
                         <span class="text-[10px] tracking-widest uppercase mt-3 opacity-60">Seg</span>
                     </div>
                 </div>
@@ -480,11 +492,13 @@ html
             <div class="max-w-2xl mx-auto relative z-10 reveal-layer">
                 <p class="tracking-[0.4em] text-secundario text-xs uppercase mb-4">No faltes</p>
                 <h2 class="font-title text-6xl md:text-7xl mb-8 text-fondo">Confirmación</h2>
-                <p class="mb-12 text-fondo/70 font-light leading-relaxed">Por favor, confírmanos tu asistencia antes del<br><b class="text-secundario">24 de Septiembre de 2026</b></p>
+                <p class="mb-12 text-fondo/70 font-light leading-relaxed">Por favor, confírmanos tu asistencia antes del<br><b class="text-secundario">04 de Marzo de 2027</b></p>
                 
-                <button onclick="openRSVP()" class="btn-premium bg-secundario text-principal border-none px-10 py-5 rounded-full font-bold text-sm tracking-widest uppercase shadow-[0_0_30px_rgba(212,175,55,0.4)]">
-                    Confirmar Asistencia
-                </button>
+                <div id="rsvp-button-container">
+                    <button onclick="openRSVP()" class="btn-premium bg-secundario text-principal border-none px-10 py-5 rounded-full font-bold text-sm tracking-widest uppercase shadow-[0_0_30px_rgba(212,175,55,0.4)]">
+                        Confirmar Asistencia
+                    </button>
+                </div>
 
                 <div class="mt-24 pt-8 border-t border-white/10">
                     <h1 class="font-title text-4xl mb-2 text-fondo">Manuel & Nallely</h1>
@@ -585,13 +599,30 @@ html
 
             // Estado persistente (Si ya la vio, abrir sobre automático o cambiar texto)
             if (localStorage.getItem('boda_opened')) {
-                // Aquí podrías saltar el sobre directo ejecutando openEnvelope(), 
-                // pero por experiencia de lujo, dejamos que lo vuelva a abrir.
-                console.log("Bienvenido de vuelta");
+                document.getElementById('dynamic-quote').innerText = "Bienvenido de nuevo";
             }
             
+            // Estado de RSVP persistente
+            if (localStorage.getItem('rsvp_confirmed') === 'true') {
+                updateRSVPUI();
+            }
+
             initCanvasParticles();
         });
+
+        // UI de Confirmación enviada
+        function updateRSVPUI() {
+            const container = document.getElementById('rsvp-button-container');
+            if (container) {
+                container.innerHTML = `
+                    <div class="bg-white/5 border border-secundario/30 p-8 rounded-2xl backdrop-blur-md max-w-md mx-auto transition-all duration-500">
+                        <i class="fas fa-check-circle text-4xl text-secundario mb-4"></i>
+                        <h3 class="font-title text-3xl text-fondo mb-2">¡Asistencia Confirmada!</h3>
+                        <p class="text-xs opacity-70 text-fondo tracking-widest leading-relaxed">Gracias por confirmar. Si necesitas hacer algún cambio, por favor contacta a los novios.</p>
+                    </div>
+                `;
+            }
+        }
 
         // 2. Lógica del Sobre 3D
         function openEnvelope() {
@@ -604,11 +635,12 @@ html
             const musicStatus = document.getElementById('music-status');
             
             // Animación y vibración (móvil)
-            if(navigator.vibrate) navigator.vibrate(50);
+            if(navigator.vibrate) navigator.vibrate([20, 30, 20]);
             envelope.classList.add('open');
             localStorage.setItem('boda_opened', 'true'); // Guardar persistencia
             
-            // Fade de música suave
+            // 🎧 AUDIO SOLO DESPUÉS DE INTERACCIÓN (mejor UX)
+            audio.currentTime = 0;
             audio.volume = 0;
             const playPromise = audio.play();
             if (playPromise !== undefined) {
@@ -622,18 +654,23 @@ html
                 });
             }
             
+            // 🎥 EFECTO CINE (zoom + blur)
+            screen.style.transition = "all 1.8s cubic-bezier(0.77, 0, 0.175, 1)";
+            screen.style.transform = "scale(1.1)";
+            screen.style.filter = "blur(8px)";
+            screen.style.opacity = "0";
+            
             setTimeout(() => {
-                screen.style.opacity = '0';
+                screen.style.visibility = 'hidden';
                 mainContent.classList.remove('hidden');
                 
                 setTimeout(() => {
-                    screen.style.visibility = 'hidden';
                     mainContent.classList.remove('opacity-0');
                     document.body.classList.remove('overflow-hidden');
                     musicPanel.classList.add('visible');
                     initScrollAnimations(); // Activar IntersectionObserver
-                }, 500);
-            }, 1800); // Dar tiempo a que termine el 3D del sobre
+                }, 300);
+            }, 1600); // Sincronizado con la transición de 1.8s
         }
 
         // 3. Audio Inteligente
@@ -656,17 +693,17 @@ html
         function fadeInAudio(audio) {
             let vol = 0;
             const fade = setInterval(() => {
-                if (vol < 0.8) { // Volumen max 80% para ser sutil
-                    vol += 0.05;
+                if (vol < 0.6) {
+                    vol += 0.02;
                     audio.volume = vol;
                 } else {
                     clearInterval(fade);
                 }
-            }, 100);
+            }, 120);
         }
 
         // 4. Cuenta Regresiva
-        const fechaBoda = new Date("Oct 24, 2026 16:00:00").getTime();
+        const fechaBoda = new Date("Apr 4, 2027 16:00:00").getTime();
         const timer = setInterval(() => {
             const ahora = new Date().getTime();
             const distancia = fechaBoda - ahora;
@@ -711,7 +748,7 @@ html
 
         // 6. Generador ICS (Agregar al Calendario)
         function downloadICS() {
-            const icsData = "BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:20261024T220000Z\nDTEND:20261025T080000Z\nSUMMARY:Boda de Manuel y Nallely\nLOCATION:Templo de San Antonio, Aguascalientes\nDESCRIPTION:¡Acompáñanos en el mejor día de nuestras vidas!\nEND:VEVENT\nEND:VCALENDAR";
+            const icsData = "BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:20270404T220000Z\nDTEND:20270405T080000Z\nSUMMARY:Boda de Manuel y Nallely\nLOCATION:Templo de San Antonio, Aguascalientes\nDESCRIPTION:¡Acompáñanos en el mejor día de nuestras vidas!\nEND:VEVENT\nEND:VCALENDAR";
             const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
             const link = document.createElement('a');
             link.href = window.URL.createObjectURL(blob);
@@ -740,8 +777,8 @@ html
             const pax = document.getElementById('rsvp-pax').value;
             const msg = document.getElementById('rsvp-msg').value;
             
-            // Número de teléfono real aquí (con código de país)
-            const phone = "521234567890"; 
+            // Número de WhatsApp actualizado (incluye código +52 para México)
+            const phone = "524491920474"; 
             
             let wappMsg = `¡Hola! Confirmo recibo de invitación para la boda de Manuel y Nallely.%0A%0A`;
             wappMsg += `*Nombre:* ${name}%0A`;
@@ -753,6 +790,10 @@ html
             
             window.open(`https://wa.me/${phone}?text=${wappMsg}`, '_blank');
             closeRSVP();
+
+            // Guardar confirmación en el dispositivo para no volver a pedirla
+            localStorage.setItem('rsvp_confirmed', 'true');
+            updateRSVPUI();
         }
 
         // 9. Partículas Sutiles Nivel Lujo (Polvo Dorado)
@@ -818,3 +859,9 @@ html
     </script>
 </body>
 </html>
+
+
+
+
+
+
